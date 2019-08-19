@@ -5,6 +5,7 @@ __author__ = '__Rebecca__'
 
 __version__ = '0.0.2'
 
+import sys
 import os
 import json
 import time
@@ -34,7 +35,7 @@ class bcy_user_item(object):
 
         
 
-class bcy_user_climber(object):
+class bcy_user_climber(object,):
     def __init__(self, user_id):
         self.__user_id = user_id
         self.__items = []
@@ -76,20 +77,22 @@ class bcy_user_climber(object):
         return url_lst
     
 
-    def begin_download(self, page_url_list=None):
+    def begin_download(self, Directory=os.getcwd() + '\\bcydownload', page_url_list=None):
         if not page_url_list:
             page_url_list = self.get_page_url()
         for i in page_url_list:
+            print("Url : "+i)
             single = bcy_single_climber(url = i)
-            single.start()
+            single.start(Directory)
         return True
 
 
 
 if __name__ == '__main__':
-    uitem = bcy_user_climber(3482886)
-    # back = uitem.begin_download()
-    p = multiprocessing.Process(target = uitem.begin_download, args = ())
+    UID = sys.argv[1]('/')[-1].split('?')[0]
+    print("Begin crawing with UID {0}".format(UID))
+    uitem = bcy_user_climber(UID)
+    p = multiprocessing.Process(target=uitem.begin_download, args=())
     p.start()
     p.join()
-    print('Hello world')
+

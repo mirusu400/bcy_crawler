@@ -5,7 +5,7 @@ __author__ = '__Rebecca__'
 
 __version__ = '0.0.2'
 
-
+import sys
 import os
 import json
 import time
@@ -21,13 +21,13 @@ class bcy_single_climber(object):
         self.url = url
         self.response = None
         self.cookie = cookie
-        self.path = path
+        self.path = None
         self.name_prefix = name_prefix
         self.callback = callback
     
-    def start(self):
+    def start(self, Directory=os.getcwd() + '\\bcydownload'):
         ssr_json = self.get_download_url_json()
-        down_lst = self.get_download_list(ssr_json)
+        down_lst = self.get_download_list(ssr_json, Directory)
         return self.download_with_list(down_lst, path=self.path, name_prefix=self.name_prefix, callback=self.callback)
     
     # 分割含有'window.__ssr_data'字段的脚本中的json信息
@@ -44,20 +44,22 @@ class bcy_single_climber(object):
                 break
         if not aim_script:
             return None
-        json_str = aim_script.text.split(';')[0].split('JSON.parse(')[1][:-1]
+        json_str = aim_script.text.split(';\n')[0].split('JSON.parse(')[1][:-1]
+        json_str = (json_str)
         json_str = eval(json_str)
         return json_str
     
     # 通过ssr_json获取下载列表
-    def get_download_list(self, ssr_json):
+    def get_download_list(self, ssr_json, Directory):
         ssr_dic = json.loads(ssr_json)
+
         multi = ssr_dic['detail']['post_data']['multi']
         # 相册ID
         self.__item_id = ssr_dic['detail']['post_data']['item_id']
         # coser昵称
         self.__coser_name = ssr_dic['detail']['detail_user']['uname']
         # 设置文件存储文件夹默认名
-        self.__auto_filename = 'bcyc-' + self.__coser_name
+        self.__auto_filename = Directory + "\\" + self.__coser_name
         # 设置默认文件名前缀
         self.__auto_prefix = 'IMG'
         download_list = []
@@ -91,7 +93,8 @@ class bcy_single_climber(object):
                         }
             data = requests.get(url, headers = headers)
             con = data.content
-            path = (path + name + '.' + url.split('.')[-1]).replace('\\', '/')
+            path = (path + name + '.' + url.split('.')[-1]).replace('\\', '/').replace('.image','.jpg')
+            print(path)
             with open(path, 'wb+') as f:
                 f.write(con)
                 f.close()
@@ -109,5 +112,5 @@ class bcy_single_climber(object):
         return True
 
 if __name__ == '__main__':
-    bcy = bcy_single_climber('https://bcy.net/item/detail/6632162902138683652')
+    bcy = bcy_single_climber(sys.argv[1])
     print("Success!") if bcy.start() else print('Fail!')

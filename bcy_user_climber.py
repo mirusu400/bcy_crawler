@@ -77,13 +77,13 @@ class bcy_user_climber(object,):
         return url_lst
     
 
-    def begin_download(self, Directory=os.getcwd() + '\\bcydownload', page_url_list=None):
+    def begin_download(self, Directory=os.getcwd() + '\\bcydownload', Isdate=0, page_url_list=None):
         if not page_url_list:
             page_url_list = self.get_page_url()
         for i in page_url_list:
             print("Url : "+i)
             single = bcy_single_climber(url = i)
-            single.start(Directory)
+            single.start(Directory,Isdate)
         return True
 
 

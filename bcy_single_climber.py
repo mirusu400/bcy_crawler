@@ -9,6 +9,7 @@ import sys
 import os
 import json
 import time
+import datetime
 import requests
 import threading
 from bs4 import BeautifulSoup
@@ -25,10 +26,10 @@ class bcy_single_climber(object):
         self.name_prefix = name_prefix
         self.callback = callback
     
-    def start(self, Directory=os.getcwd() + '\\bcydownload'):
+    def start(self, Directory=os.getcwd() + '\\bcydownload', Isdate=0):
         ssr_json = self.get_download_url_json()
         down_lst = self.get_download_list(ssr_json, Directory)
-        return self.download_with_list(down_lst, path=self.path, name_prefix=self.name_prefix, callback=self.callback)
+        return self.download_with_list(down_lst, Isdate, path=self.path, name_prefix=self.name_prefix, callback=self.callback)
     
     # 分割含有'window.__ssr_data'字段的脚本中的json信息
     def get_download_url_json(self):
@@ -53,10 +54,11 @@ class bcy_single_climber(object):
     # 通过ssr_json获取下载列表
     def get_download_list(self, ssr_json, Directory):
         ssr_dic = json.loads(ssr_json)
-
         multi = ssr_dic['detail']['post_data']['multi']
         # 相册ID
         self.__item_id = ssr_dic['detail']['post_data']['item_id']
+        # Post Write Dates
+        self.__post_date = ssr_dic['detail']['post_data']['ctime']
         # coser昵称
         self.__coser_name = ssr_dic['detail']['detail_user']['uname']
         # 设置文件存储文件夹默认名
@@ -69,14 +71,18 @@ class bcy_single_climber(object):
         return download_list
     
     # 通过下载列表下载图片（开启多线程，下载完毕返回True）
-    def download_with_list(self, download_list, path=None, name_prefix=None, callback=None):
+    def download_with_list(self, download_list, Isdate=0, path=None, name_prefix=None, callback=None):
         '''
         download_list : 下载列表，为元素仅包含str(url)的list类型\n
         path : 下载目录，该参数若缺省则为当前目录下的coser名的项目id下\n
         name_prefix : 下载文件名字前缀，默认为IMG\n
         callback : 回调函数，为单个文件下载完成后所调用的函数，参数只能有一个为下载文件路径\n
         '''
-        path = os.path.abspath(path)+'\\\\' if path else os.path.abspath(self.__auto_filename)+'\\'+self.__item_id+'\\'
+        if Isdate:
+            posttime = dateTime = datetime.datetime.fromtimestamp(self.__post_date).strftime('%Y-%m-%d')
+            path = os.path.abspath(path)+'\\\\' if path else os.path.abspath(self.__auto_filename)+'\\'+posttime + " " +self.__item_id+'\\'
+        else:
+            path = os.path.abspath(path)+'\\\\' if path else os.path.abspath(self.__auto_filename)+'\\'+self.__item_id+'\\'
         name_prefix = name_prefix if name_prefix else self.__auto_prefix+'_'
         if not os.path.exists(path):
             os.makedirs(path)

@@ -26,23 +26,36 @@
 >>       BeautifulSoup, requests
 
 ```bash
-> pip3 install requests
-> pip3 install beautifulsoup4
+> pip install requests
+> pip install beautifulsoup4
 ```
 4. 사용 방법
-> `Python3 bcy_crawler_main.py bcy_user_or_post_link [-d directory]`
+```
+usage: bcy_crawler_main.py [-h] [-n directory] [-d] Link
 
--d directory 옵션을 사용하지 않으면 저절로 `\bcydownload` 에 저장됩니다.
+Download images from bcy.net.
 
-> `Python3 bcy_single_climber.py bcy_post_link`
+positional arguments:
+  Link          Link of user or Link of post
 
-> `Python3 bcy_user_climber.py bcy_user_link`
+optional arguments:
+  -h, --help    show this help message and exit
+  -n directory  Set path to save
+  -d, --date    Use it if you need download with date.
+```
+`-n directory` 옵션을 사용하면 특정한 폴더에 저장 가능합니다. 기본 옵션은 `\bcydownload` 입니다.
+`-d`, `--date` 옵션을 사용하면 폴더 저장 시 날짜를 같이 저장합니다.
 
-위 두 단일 스크립트는 무조건 `\bcydownload` 에 저장됩니다. 
+> `Python bcy_single_climber.py bcy_post_link`
+> `Python bcy_user_climber.py bcy_user_link`
+
+위 두 단일 스크립트는 특정 유저/포스트를 저장하는 스크립트로 무조건 `\bcydownload` 에 저장됩니다. 
 
 三.알려진 문제
 -----
-나도 몰라
 
-Enjoy
+`나도 몰라`
+
 -----
+Enjoy
+

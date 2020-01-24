@@ -29,7 +29,22 @@
 > pip3 install beautifulsoup4
 ```
 4. 使用方法
-> `Python3 bcy_single_climber.py`
+```
+usage: bcy_crawler_main.py [-h] [-n directory] [-d] Link
+
+Download images from bcy.net.
+
+positional arguments:
+  Link          Link of user or Link of post
+
+optional arguments:
+  -h, --help    show this help message and exit
+  -n directory  Set path to save
+  -d, --date    Use it if you need download with date.
+```
+
+> `Python bcy_single_climber.py bcy_post_link`
+> `Python bcy_user_climber.py bcy_user_link`
 
 三.已知问题
 -----

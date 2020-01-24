@@ -32,7 +32,8 @@ class bcy_single_climber(object):
     
     # 分割含有'window.__ssr_data'字段的脚本中的json信息
     def get_download_url_json(self):
-        headers = {'Cookie':str(self.cookie)}
+        headers = {'Cookie':str(self.cookie),
+                'User-Agent' : 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'}
         self.response = requests.get(self.url, headers=headers)
         context = self.response.text
         soup = BeautifulSoup(context, 'html.parser')
@@ -71,9 +72,9 @@ class bcy_single_climber(object):
     def download_with_list(self, download_list, path=None, name_prefix=None, callback=None):
         '''
         download_list : 下载列表，为元素仅包含str(url)的list类型\n
-                 path : 下载目录，该参数若缺省则为当前目录下的coser名的项目id下\n
-          name_prefix : 下载文件名字前缀，默认为IMG\n
-             callback : 回调函数，为单个文件下载完成后所调用的函数，参数只能有一个为下载文件路径\n
+        path : 下载目录，该参数若缺省则为当前目录下的coser名的项目id下\n
+        name_prefix : 下载文件名字前缀，默认为IMG\n
+        callback : 回调函数，为单个文件下载完成后所调用的函数，参数只能有一个为下载文件路径\n
         '''
         path = os.path.abspath(path)+'\\\\' if path else os.path.abspath(self.__auto_filename)+'\\'+self.__item_id+'\\'
         name_prefix = name_prefix if name_prefix else self.__auto_prefix+'_'
@@ -88,7 +89,7 @@ class bcy_single_climber(object):
         fp.close()
         def download_single(url, path, name, callback=None):
             headers =   {   'Cookie'  : 'AspxAutoDetectCookieSupport=1', 
-                            'User-Agent'    : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1 Safari/605.1.15',
+                            'User-Agent' : 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
                             'Upgrade-Insecure-Requests'         : '1'
                         }
             data = requests.get(url, headers = headers)
